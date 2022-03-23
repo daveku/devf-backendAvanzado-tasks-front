@@ -9,11 +9,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   padding-left: 1rem;
   padding-right: 1rem;
 }
-
 
 .task-input {
   width: 100%;
@@ -31,7 +29,7 @@
 }
 
 .task-input__btn {
-  background-color: #FFE5D4;
+  background-color: #ffe5d4;
   width: 100%;
   max-width: 500px;
   padding: 1rem;
@@ -42,7 +40,7 @@
 }
 
 .task-input__btn:active {
-  background-color: #EFC7C2;
+  background-color: #efc7c2;
 }
 
 .task-input__text {
@@ -60,4 +58,19 @@
   font-size: 1rem;
   border-radius: 5px;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem 0 1rem;
+}
+
+.task__delete {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.task__delete:hover {
+  border-radius: 50%;
+  background-color: #efc7c2;
 }
