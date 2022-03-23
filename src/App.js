@@ -1,59 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { fetchTasks } from './api';
-import './App.css';
-
+import React, { useState, useEffect } from "react";
+import { createTask, fetchTasks, deleteTask as APIdeleteTask } from "./api";
+import "./App.css";
 
 function App() {
-  const [value, setValue] = useState("")
-  const [tasks, setTasks] = useState([])
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
+    setLoader(true);
+    console.log("useEffect");
     fetchTasks()
-    .then((res) => {
-      setTasks(res.data)
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-  }, [])
+      .then((res) => {
+        setTasks(res.data);
+        setLoader(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoader(false);
+      });
+
+    return () => {};
+  }, []);
 
   const addTask = () => {
-    console.log('Agrega la tarea ', value);
-    setTasks(tasks.concat({
-      _id: "6233f2a9e7e80ebdb3e475ac" + Math.floor(Math.random() * 10),
-      text: value
-    }))
-  }
+    createTask(taskTitle)
+      .then((res) => {
+        const task = res.data;
+        setTasks(tasks.concat(task));
+        setTaskTitle("");
+        setTaskDescription("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteTask = (id) => {
+    APIdeleteTask(id).then((res) => {
+      const newTasks = tasks.filter((task) => task._id !== res.data.id);
+      setTasks(newTasks);
+    });
+  };
 
   return (
     <div className="app">
       <header className="app-header">
         <div className="task-input__container">
           <div className="task-input">
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="task-input__text"
-              value={value}
-              placeholder="Ingresa la tarea"
+              value={taskTitle}
+              placeholder="Título de la tarea"
               onChange={(e) => {
-                setValue(e.target.value);
-              }}    
+                setTaskTitle(e.target.value);
+              }}
             />
+            <textarea
+              type="text"
+              className="task-input__text"
+              value={taskDescription}
+              placeholder="Descripción"
+              onChange={(e) => {
+                setTaskDescription(e.target.value);
+              }}
+            ></textarea>
           </div>
-          <button 
-            onClick={addTask} 
-            className="task-input__btn"
-          >
+          <button onClick={addTask} className="task-input__btn">
             Ingresar Tarea
           </button>
         </div>
-        
+        {loader && <p> Loading... </p>}
         {tasks.map((task) => {
           return (
-            <div key={task._id} className="task">
-              <p>{task.text}</p>
+            <div key={task._id} className="task" id={task._id}>
+              <p>{task.title}</p>
+              <span
+                className="task__delete"
+                onClick={() => deleteTask(task._id)}
+              >
+                X
+              </span>
             </div>
-          )
+          );
         })}
       </header>
     </div>
