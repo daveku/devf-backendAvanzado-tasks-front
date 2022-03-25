@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import TextInput from "../../components/TextInput";
 import Button from "../../components/Button";
+import { login } from "../../api";
 
 import "./AuthView.css";
 
-const AuthView = ({ isUser }) => {
+const AuthView = ({ isUser, setToken }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const makeLogin = () => {
+    login(email, password).then((userData) => {
+      setToken(userData.data.token);
+    });
+  };
 
   return (
     <div className="auth-view">
@@ -24,7 +31,7 @@ const AuthView = ({ isUser }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <Button onClick={() => isUser(email)}>Iniciar Sesión</Button>
+      <Button onClick={() => makeLogin()}>Iniciar Sesión</Button>
     </div>
   );
 };
