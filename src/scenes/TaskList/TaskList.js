@@ -5,7 +5,7 @@ import { TasksFields } from "../../components/TasksFields/TasksFields";
 import { Task } from "../../components/Task/Task";
 import "./TaskList.css";
 
-const TaskList = ({ isUser }) => {
+const TaskList = ({ token }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [tasks, setTasks] = useState([]);
@@ -13,7 +13,7 @@ const TaskList = ({ isUser }) => {
 
   useEffect(() => {
     setLoader(true);
-    fetchTasks()
+    fetchTasks(token)
       .then((res) => {
         setTasks(res.data);
         setLoader(false);
@@ -27,7 +27,7 @@ const TaskList = ({ isUser }) => {
   }, []);
 
   const addTask = () => {
-    createTask(taskTitle)
+    createTask(taskTitle, token)
       .then((res) => {
         const task = res.data;
         setTasks(tasks.concat(task));
@@ -39,7 +39,7 @@ const TaskList = ({ isUser }) => {
       });
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = (id, token) => {
     APIdeleteTask(id).then((res) => {
       const newTasks = tasks.filter((task) => task._id !== res.data.id);
       setTasks(newTasks);
@@ -48,7 +48,6 @@ const TaskList = ({ isUser }) => {
 
   return (
     <>
-      <h2>Bienvenido {isUser}</h2>
       <div className="task-input__container">
         <div className="task-input">
           <TasksFields
